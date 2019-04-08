@@ -1,0 +1,36 @@
+#mainLogo, #mainLogoDown {
+  font-family: 'Indie Flower', cursive;
+  font-size: 30px;
+}
+
+.css-menu-list {
+  background-color: rgb(255, 187, 123); 
+}
+
+.css-bg-me, .list-group .active {
+  background-color: rgb(153, 75, 3);
+  border-color: rgb(153, 75, 3);
+}
+.btn.css-bg-me:hover {
+  background-color: rgb(102, 49, 0);
+  border-color: rgb(153, 75, 3);
+}
+
+.css-center {
+  text-align: center;
+}
+
+footer {
+  text-align: center;
+  background-color: rgb(153, 75, 3);
+}
+footer .css-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 125px;
+}
+#copyright, #mainLogoDown {
+  color: #ffffff;
+  text-decoration: none;
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Mini WP</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/brands.css"
+    integrity="sha384-n9+6/aSqa9lBidZMRCQHTHKJscPq6NW4pCQBiMmHdUCvPN8ZOg2zJJTkC7WIezWv" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/fontawesome.css"
+    integrity="sha384-vd1e11sR28tEK9YANUtpIOdjGW14pS87bUBuOIoBILVWLFnS+MCX9T6MMf0VdPGq" crossorigin="anonymous">
+
+  <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark css-bg-me">
+      <a id="mainLogo" class="navbar-brand" href="#"><i class="fab fa-opencart"></i> Mw</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Dashboard<span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Preview Site</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div id="menuList" class="css-menu-list col-sm-3">
+        <br>
+        <p>
+          <button class="btn btn-dark css-bg-me" type="button" data-toggle="collapse" data-target="#createArticle"
+            aria-expanded="false" aria-controls="createArticle">
+            Write an article
+          </button>
+        </p>
+        <div class="list-group">
+          <button type="button" class="list-group-item list-group-item-action active" data-toggle="collapse"
+            data-target="#viewArticle" aria-expanded="false" aria-controls="viewArticle">
+            Cras justo odio
+          </button>
+          <button type="button" class="list-group-item list-group-item-action">Dapibus ac facilisis
+            in</button>
+          <button type="button" class="list-group-item list-group-item-action">Morbi leo risus</button>
+          <button type="button" class="list-group-item list-group-item-action">Porta ac consectetur
+            ac</button>
+        </div>
+        <br>
+      </div>
+      <div id="preview" class="col-sm">
+        <br>
+        <div class="collapse" id="createArticle">
+          <div class="card card-body">
+            <form>
+              <div class="form-group">
+                <label for="inputTitle">Title</label>
+                <input type="text" class="form-control" id="inputTitle" placeholder="Write article title...">
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">Article</label>
+                <textarea class="form-control" id="inputArticle" rows="10"
+                  placeholder="Write the articles now..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+          </div>
+        </div>
+        <div class="collapse" id="viewArticle">
+          <div class="card card-body">
+            <h1>Sample of Title</h1>
+            <p>A teenage girl climbs into her coach's white Chevy Malibu. The heat lies on the land like the heel of a
+              fat man's hand. The cicadas scream. The cattle chew the spear grass. The turkey buzzards wheel.</p>
+            <p>The car crunches the gravel leading away from the high school. The coach turns onto asphalt. They ride
+              that black ribbon in silence.</p>
+            <p>Nothing stops the eye. Nothing bends the road. It's a blank slate, this land. Anything might be scrawled
+              on it. Metropolises might emerge, as Dallas did 208 miles to the northeast and Houston 292 miles to the
+              southeast. Armadillos or astronauts might arise, oil or bluebonnets, Janis Lyn Joplin or Dwight David
+              Eisenhower.</p>
+            <p>It's as blank as the page upon which the teenage girl began a poem.</p>
+            <br>
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#" aria-expanded="false"
+              aria-controls="">
+              edit
+            </button>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="css-bg-me css-center">
+      <a id="mainLogoDown" href="#"><i class="fab fa-opencart"></i> Mw</a>
+      <br>
+      <span id="copyright">&#169; 2019 MiniWordpress by Muhammad Ramadhoni</span>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
