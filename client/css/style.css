@@ -7,10 +7,19 @@
   background-color: rgb(255, 187, 123); 
 }
 
+.css-w-100 {
+  width: 100%;
+}
+
+.css-fc-white {
+  color: #ffffff;
+}
+
 .css-bg-me, .list-group .active {
   background-color: rgb(153, 75, 3);
-  border-color: rgb(153, 75, 3);
+  border-color: rgb(255, 187, 123); 
 }
+
 .btn.css-bg-me:hover {
   background-color: rgb(102, 49, 0);
   border-color: rgb(153, 75, 3);
