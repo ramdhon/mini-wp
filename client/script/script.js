@@ -12,37 +12,62 @@ var app = new Vue({
   //   };
   // },
   data: {
-    text: '',
+    contain: '',
     title: '',
-    articles: []
+    articles: [],
+    search: '',
+    filtered: []
   },
 
   computed: {
-
+   
   },
-  watch: {
 
+  watch: {
+    search() {
+      console.log(this.search);
+      this.filtered = this.articles.filter(article => {
+        if(this.search) {
+          return article.title.match(this.search)
+        }
+        else
+          return article.title
+      })
+    }
   },
   created() {
     axios
       .get(serverUrl + '/articles')
       .then(({ data }) => { 
         this.articles = data;
+        this.filtered = this.articles.filter(article => {
+          if(this.search) {
+            return article.title.match(this.search)
+          }
+          else
+            return article.title
+        })
       })
       .catch((err) => {
         console.log(err);
       });
   },
   methods: {
-    addArticle: function () {
+    addArticle() {
       axios
-        .post(serverUrl + '/articles', { title: this.title, text: this.title })
+        .post(serverUrl + '/articles', { title: this.title, contain: this.contain })
         .then(({ newArticle }) => {
+
           this.articles.push(newArticle);
+          this.title = '';
+          this.contain = '';
         })
         .catch((err) => {
           console.log(err);
         });
+    },
+    displayArticle() {
+      return this.articles.find(article => article.id == 1)
     }
   },
 });

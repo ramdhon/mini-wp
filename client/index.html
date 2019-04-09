@@ -40,8 +40,8 @@
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
             <b-nav-form>
-              <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-              <b-button size="sm" class="my-2 my-sm-0" type="submit" variant="outline-light">Search</b-button>
+              <b-form-input v-model="search" size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
+              <b-button size="sm" class="my-2 my-sm-0" type="submit" variant="outline-light"><i class="fas fa-search"></i></b-button>
             </b-nav-form>
           </b-navbar-nav>
         </b-collapse>
@@ -61,7 +61,7 @@
           <b-collapse id="listArticle">
             <b-card>
               <b-list-group>
-                <b-list-group-item v-for="article in articles" v-b-toggle="'viewArticle'" button>{{ article.title }}
+                <b-list-group-item v-for="article in filtered" v-b-toggle="'viewArticle'" v-on:click="`displayArticle`" button>{{ article.title }}
                 </b-list-group-item>
               </b-list-group>
             </b-card>
@@ -72,7 +72,7 @@
           <br>
           <b-collapse id="createArticle" class="mt-2">
             <b-card>
-              <form>
+              <form method="POST" v-on:submit.prevent="addArticle">
                 <div class="form-group">
                   <label for="inputTitle">Title</label>
                   <input v-model="title" type="text" class="form-control" id="inputTitle"
@@ -80,7 +80,7 @@
                 </div>
                 <div class="form-group">
                   <label for="exampleFormControlTextarea1">Article</label>
-                  <wysiwyg v-model="text" />
+                  <wysiwyg v-model="contain" />
                 </div>
                 <button type="submit" class="btn btn-success">Submit</button>
               </form>
@@ -89,17 +89,9 @@
           <br>
           <b-collapse id="viewArticle" class="mt-2">
             <b-card>
-              <h1>Sample of Title</h1>
-              <p>A teenage girl climbs into her coach's white Chevy Malibu. The heat lies on the land like the heel of a
-                fat man's hand. The cicadas scream. The cattle chew the spear grass. The turkey buzzards wheel.</p>
-              <p>The car crunches the gravel leading away from the high school. The coach turns onto asphalt. They ride
-                that black ribbon in silence.</p>
-              <p>Nothing stops the eye. Nothing bends the road. It's a blank slate, this land. Anything might be
-                scrawled
-                on it. Metropolises might emerge, as Dallas did 208 miles to the northeast and Houston 292 miles to the
-                southeast. Armadillos or astronauts might arise, oil or bluebonnets, Janis Lyn Joplin or Dwight David
-                Eisenhower.</p>
-              <p>It's as blank as the page upon which the teenage girl began a poem.</p>
+              <h1>{{ displayArticle().title }}</h1>
+              <p>{{ displayArticle().createdAt }}</p>
+              <p>{{ displayArticle().contain }}</p>
               <b-button variant="outline-primary">edit</b-button>
               <br>
             </b-card>
