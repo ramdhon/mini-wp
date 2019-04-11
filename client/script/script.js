@@ -16,23 +16,21 @@ var app = new Vue({
     title: '',
     articles: [],
     search: '',
-    filtered: []
+    filtered: [],
+    notification: {
+      status: false,
+      success: true,
+      message: ''
+    }
   },
 
   computed: {
-   
+    
   },
 
   watch: {
     search() {
-      console.log(this.search);
-      this.filtered = this.articles.filter(article => {
-        if(this.search) {
-          return article.title.match(this.search)
-        }
-        else
-          return article.title
-      })
+      this.filterArticles();
     }
   },
   created() {
@@ -40,13 +38,7 @@ var app = new Vue({
       .get(serverUrl + '/articles')
       .then(({ data }) => { 
         this.articles = data;
-        this.filtered = this.articles.filter(article => {
-          if(this.search) {
-            return article.title.match(this.search)
-          }
-          else
-            return article.title
-        })
+        this.filterArticles()
       })
       .catch((err) => {
         console.log(err);
@@ -56,9 +48,9 @@ var app = new Vue({
     addArticle() {
       axios
         .post(serverUrl + '/articles', { title: this.title, contain: this.contain })
-        .then(({ newArticle }) => {
-
-          this.articles.push(newArticle);
+        .then(({ data }) => {
+          this.articles.push(data);
+          this.filtered.push(data);
           this.title = '';
           this.contain = '';
         })
@@ -66,8 +58,43 @@ var app = new Vue({
           console.log(err);
         });
     },
-    displayArticle() {
-      return this.articles.find(article => article.id == 1)
+
+    deleteArticle(id) {
+      axios
+        .delete(serverUrl + `/articles/${id}`)
+        .then(() => {
+          this.notification.status = true;
+          this.notification.success = true;
+          this.notification.message = 'success deleted';
+          // this.articles = this.articles.slice(0, id);
+          // this.filtered = this.filtered.slice(0, id);
+        })
+        .catch(err => {
+          this.notification.status = true;
+          this.notification.success = false;
+          this.notification.message = 'error deleted';
+        })
+    },
+
+    emptyForm() {
+      this.title = '';
+      this.contain = '';
+    },
+
+    editArticle(id) {
+      let found = this.filtered.find(article => article.id == id)
+      this.title = found.title;
+      this.contain = found.contain;
+    },
+
+    filterArticles() {
+      this.filtered = this.articles.filter(article => {
+        if(this.search) {
+          return article.title.toLowerCase().match(this.search.toLowerCase())
+        }
+        else
+          return article.title
+      })
     }
   },
 });

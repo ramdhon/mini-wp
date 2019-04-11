@@ -34,14 +34,15 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item href="#">Dashboard</b-nav-item>
-            <b-nav-item href="#">Preview Site</b-nav-item>
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
             <b-nav-form>
-              <b-form-input v-model="search" size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-              <b-button size="sm" class="my-2 my-sm-0" type="submit" variant="outline-light"><i class="fas fa-search"></i></b-button>
+              <b-collapse id="searchBar">
+                <b-form-input v-model="search" size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
+              </b-collapse>
+              <b-button v-b-toggle="'searchBar'" size="sm" class="my-2 my-sm-0" variant="outline-light"><i class="fas fa-search"></i></b-button>
             </b-nav-form>
           </b-navbar-nav>
         </b-collapse>
@@ -53,7 +54,7 @@
         <div id="menuList" class="css-menu-list col-sm-3">
           <br>
           <b-list-group>
-            <b-list-group-item v-b-toggle="'createArticle'" class="css-bg-me css-w-100 css-fc-white" button><i
+            <b-list-group-item v-b-toggle="'createArticle'" v-on:click="emptyForm" class="css-bg-me css-w-100 css-fc-white" button><i
                 class="fas fa-edit"></i> Write an article</b-list-group-item>
             <b-list-group-item v-b-toggle="'listArticle'" class="css-bg-me css-w-100 css-fc-white" button><i
                 class="fas fa-book-open"></i> List of articles</b-list-group-item>
@@ -61,7 +62,7 @@
           <b-collapse id="listArticle">
             <b-card>
               <b-list-group>
-                <b-list-group-item v-for="article in filtered" v-b-toggle="'viewArticle'" v-on:click="`displayArticle`" button>{{ article.title }}
+                <b-list-group-item v-for="article in filtered" v-b-toggle="`viewArticle-${article.id}`" button>{{ article.title }}
                 </b-list-group-item>
               </b-list-group>
             </b-card>
@@ -70,7 +71,17 @@
         </div>
         <div id="preview" class="col-sm">
           <br>
-          <b-collapse id="createArticle" class="mt-2">
+          <!-- <div v-if="notification.status">
+            <b-alert v-if="notification.success" v-model="showDismissibleAlert" variant="success" dismissible>
+              {{ notification.message }}
+            </b-alert>
+            <br>
+            <b-alert v-else v-model="showDismissibleAlert" variant="danger" dismissible>
+              {{ notification.message }}
+            </b-alert>
+          </div>
+          <br> -->
+          <b-collapse id="createArticle" accordion="my-accordion" class="mt-2">
             <b-card>
               <form method="POST" v-on:submit.prevent="addArticle">
                 <div class="form-group">
@@ -82,17 +93,35 @@
                   <label for="exampleFormControlTextarea1">Article</label>
                   <wysiwyg v-model="contain" />
                 </div>
-                <button type="submit" class="btn btn-success">Submit</button>
+                <b-button type="submit" v-b-toggle="'createArticle'" variant="success">Post</b-button>
               </form>
             </b-card>
           </b-collapse>
           <br>
-          <b-collapse id="viewArticle" class="mt-2">
+          <b-collapse id="editArticle" accordion="my-accordion" class="mt-2">
             <b-card>
-              <h1>{{ displayArticle().title }}</h1>
-              <p>{{ displayArticle().createdAt }}</p>
-              <p>{{ displayArticle().contain }}</p>
-              <b-button variant="outline-primary">edit</b-button>
+              <form method="POST" v-on:submit.prevent="updateArticle">
+                <div class="form-group">
+                  <label for="inputTitle">Title</label>
+                  <input v-model="title" type="text" class="form-control" id="inputTitle"
+                    placeholder="Write article title...">
+                </div>
+                <div class="form-group">
+                  <label for="exampleFormControlTextarea1">Article</label>
+                  <wysiwyg v-model="contain" />
+                </div>
+                <b-button type="submit" v-b-toggle="'editArticle'" variant="success">Save</b-button>
+              </form>
+            </b-card>
+          </b-collapse>
+          <br>
+          <b-collapse v-for="article in filtered" v-bind:id="`viewArticle-${article.id}`" accordion="my-accordion" class="mt-2">
+            <b-card>
+              <h1>{{ article.title }}</h1>
+              <p>{{ article.createdAt }}</p>
+              <p>{{ article.contain }}</p>
+              <b-button v-b-toggle="'editArticle'" variant="outline-primary" v-on:click="editArticle(article.id)">Edit</b-button>
+              <b-button v-b-toggle="`viewArticle-${article.id}`" variant="danger" v-on:click="deleteArticle(article.id)">Delete</b-button>
               <br>
             </b-card>
           </b-collapse>
