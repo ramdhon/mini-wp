@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="google-signin-client_id"
+    content="721214027769-9nkf9lnt121m8bqne51rmn56klrj14nm.apps.googleusercontent.com">
+
   <title>Mini WP</title>
 
   <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
@@ -21,132 +24,214 @@
     integrity="sha384-vd1e11sR28tEK9YANUtpIOdjGW14pS87bUBuOIoBILVWLFnS+MCX9T6MMf0VdPGq" crossorigin="anonymous">
 
   <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+  
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 
 <body>
+  <div class="g-signin2" data-onsuccess="onSignIn"></div>
   <div id="app">
-    <header>
-      <b-navbar toggleable="lg" type="dark" class="css-bg-me">
-        <b-navbar-brand id="mainLogo" href="#"><i class="fab fa-opencart"></i> Mw</b-navbar-brand>
-
-        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-        <b-collapse id="nav-collapse" is-nav>
-          <b-navbar-nav>
-            <b-nav-item href="#">Dashboard</b-nav-item>
-          </b-navbar-nav>
-
-          <!-- Right aligned nav items -->
-          <b-navbar-nav class="ml-auto">
-            <b-nav-form>
-              <b-collapse id="searchBar">
-                <b-form-input v-model="search" size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-              </b-collapse>
-              <b-button v-b-toggle="'searchBar'" size="sm" class="my-2 my-sm-0" variant="outline-light"><i class="fas fa-search"></i></b-button>
-            </b-nav-form>
-          </b-navbar-nav>
-        </b-collapse>
-      </b-navbar>
-    </header>
-
-    <div class="container-fluid">
-      <div class="row">
-        <div id="menuList" class="css-menu-list col-sm-3">
-          <br>
-          <b-list-group>
-            <b-list-group-item v-b-toggle="'createArticle'" v-on:click="emptyForm" class="css-bg-me css-w-100 css-fc-white" button><i
-                class="fas fa-edit"></i> Write an article</b-list-group-item>
-            <b-list-group-item v-b-toggle="'listArticle'" class="css-bg-me css-w-100 css-fc-white" button><i
-                class="fas fa-book-open"></i> List of articles</b-list-group-item>
-          </b-list-group>
-          <b-collapse id="listArticle">
-            <b-card>
-              <b-list-group>
-                <b-list-group-item v-for="article in filtered" v-b-toggle="`viewArticle-${article.id}`" button>{{ article.title }}
-                </b-list-group-item>
-              </b-list-group>
-            </b-card>
-          </b-collapse>
-          <br>
-        </div>
-        <div id="preview" class="col-sm">
-          <br>
-          <!-- <div v-if="notification.status">
-            <b-alert v-if="notification.success" v-model="showDismissibleAlert" variant="success" dismissible>
-              {{ notification.message }}
-            </b-alert>
-            <br>
-            <b-alert v-else v-model="showDismissibleAlert" variant="danger" dismissible>
-              {{ notification.message }}
-            </b-alert>
+    <div v-if="!isLoggedIn" class="container my-4">
+      <div v-if="isRegister">
+        <div class="row justify-content-center">
+          <div class="col-4">
+            <div class="card mb-4">
+              <div class="card-header text-center">Register</div>
+              <div class="card-body">
+                <form method="post" @submit.prevent="register">
+                  <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input v-model="fullName" type="text" class="form-control" id="fullName"
+                      placeholder="Enter your name">
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input v-model="email" type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                      placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">
+                      We'll never share your email with anyone else.
+                    </small>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <input v-model="password" type="password" class="form-control" id="password" placeholder="Password">
+                  </div>
+                  <button type="submit" class="btn css-bg-me css-fc-white">Register</button>
+                  <small id="emailHelp" class="form-text text-muted">
+                    Have account? <a href="#" @click="moveSignin">Login here</a>
+                  </small>
+                </form>
+              </div>
+            </div>
           </div>
-          <br> -->
-          <b-collapse id="createArticle" accordion="my-accordion" class="mt-2">
-            <b-card>
-              <form method="POST" v-on:submit.prevent="addArticle">
-                <div class="form-group">
-                  <label for="inputTitle">Title</label>
-                  <input v-model="title" type="text" class="form-control" id="inputTitle"
-                    placeholder="Write article title...">
-                </div>
-                <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Article</label>
-                  <wysiwyg v-model="contain" />
-                </div>
-                <b-button type="submit" v-b-toggle="'createArticle'" variant="success">Post</b-button>
-              </form>
-            </b-card>
-          </b-collapse>
-          <br>
-          <b-collapse id="editArticle" accordion="my-accordion" class="mt-2">
-            <b-card>
-              <form method="POST" v-on:submit.prevent="updateArticle">
-                <div class="form-group">
-                  <label for="inputTitle">Title</label>
-                  <input v-model="title" type="text" class="form-control" id="inputTitle"
-                    placeholder="Write article title...">
-                </div>
-                <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Article</label>
-                  <wysiwyg v-model="contain" />
-                </div>
-                <b-button type="submit" v-b-toggle="'editArticle'" variant="success">Save</b-button>
-              </form>
-            </b-card>
-          </b-collapse>
-          <br>
-          <b-collapse v-for="article in filtered" v-bind:id="`viewArticle-${article.id}`" accordion="my-accordion" class="mt-2">
-            <b-card>
-              <h1>{{ article.title }}</h1>
-              <p>{{ article.createdAt }}</p>
-              <p>{{ article.contain }}</p>
-              <b-button v-b-toggle="'editArticle'" variant="outline-primary" v-on:click="editArticle(article.id)">Edit</b-button>
-              <b-button v-b-toggle="`viewArticle-${article.id}`" variant="danger" v-on:click="deleteArticle(article.id)">Delete</b-button>
-              <br>
-            </b-card>
-          </b-collapse>
-          <br>
+        </div>
+      </div>
+      <div v-else>
+        <div class="row justify-content-center">
+          <div class="col-4">
+            <div class="card mb-4">
+              <div class="card-header text-center">Login</div>
+              <div class="card-body">
+                <form method="post" @submit.prevent="login">
+                  <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input v-model="email" type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                      placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">
+                      We'll never share your email with anyone else.
+                    </small>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <input v-model="password" type="password" class="form-control" id="password" placeholder="Password">
+                  </div>
+                  <button type="submit" class="btn css-bg-me css-fc-white">Login</button>
+                  <br><br>
+                  <div class="g-signin2" data-onsuccess="onSignIn" @click="onSignIn"></div>
+                  <small id="emailHelp" class="form-text text-muted">
+                    Not registered? <a href="#" @click="moveRegister">Register here</a>
+                  </small>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <footer>
-      <div class="css-bg-me css-center">
-        <a id="mainLogoDown" href="#"><i class="fab fa-opencart"></i> Mw</a>
-        <br>
-        <span id="copyright">&#169; 2019 MiniWordpress by Muhammad Ramadhoni</span>
+    <div v-else>
+      <header>
+        <b-navbar toggleable="lg" type="dark" class="css-bg-me">
+          <b-navbar-brand id="mainLogo" href="#"><i class="fab fa-opencart"></i> Mw</b-navbar-brand>
+  
+          <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+  
+          <b-collapse id="nav-collapse" is-nav>
+            <b-navbar-nav>
+              <b-nav-item href="#">Dashboard</b-nav-item>
+            </b-navbar-nav>
+  
+            <!-- Right aligned nav items -->
+            <b-navbar-nav class="ml-auto">
+              <a class="nav-link" href="#" onclick="signOut()">Sign out</a>
+              <b-nav-form>
+                <b-collapse id="searchBar">
+                  <b-form-input v-model="search" size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
+                </b-collapse>
+                <b-button v-b-toggle="'searchBar'" size="sm" class="my-2 my-sm-0" variant="outline-light"><i
+                    class="fas fa-search"></i></b-button>
+              </b-nav-form>
+            </b-navbar-nav>
+          </b-collapse>
+        </b-navbar>
+      </header>
+  
+      <div class="container-fluid">
+        <div class="row">
+          <div id="menuList" class="css-menu-list col-sm-3">
+            <br>
+            <b-list-group>
+              <b-list-group-item v-b-toggle="'createArticle'" v-on:click="emptyForm"
+                class="css-bg-me css-w-100 css-fc-white" button><i class="fas fa-edit"></i> Write an article
+              </b-list-group-item>
+              <b-list-group-item v-b-toggle="'listArticle'" class="css-bg-me css-w-100 css-fc-white" button><i
+                  class="fas fa-book-open"></i> List of articles</b-list-group-item>
+            </b-list-group>
+            <b-collapse id="listArticle">
+              <b-card>
+                <b-list-group>
+                  <b-list-group-item v-for="article in filtered" v-b-toggle="article.id" button>{{ article.title }}
+                  </b-list-group-item>
+                </b-list-group>
+              </b-card>
+            </b-collapse>
+            <br>
+          </div>
+          <div id="preview" class="col-sm">
+            <br>
+            <b-collapse id="createArticle" accordion="my-accordion" class="mt-2">
+              <b-card>
+                <form method="POST" v-on:submit.prevent="addArticle">
+                  <div class="form-group">
+                    <label for="inputTitle">Title</label>
+                    <input v-model="title" type="text" class="form-control" id="inputTitle"
+                      placeholder="Write article title...">
+                  </div>
+                  <div class="form-group">
+                    <label for="image">Picture</label>
+                    <input class="btn" @change="handleFileUpload" type="file" class="form-control" id="image">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Article</label>
+                    <wysiwyg v-model="content" />
+                  </div>
+                  <b-button type="submit" v-b-toggle="'createArticle'" variant="success">Post</b-button>
+                </form>
+              </b-card>
+            </b-collapse>
+            <b-collapse id="editArticle" accordion="my-accordion" class="mt-2">
+              <b-card>
+                <form method="POST" v-on:submit.prevent="updateArticle">
+                  <div class="form-group">
+                    <label for="inputTitle">Title</label>
+                    <input v-model="title" type="text" class="form-control" id="inputTitle"
+                      placeholder="Write article title...">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Article</label>
+                    <wysiwyg v-model="content" />
+                  </div>
+                  <b-button type="submit" v-b-toggle="'editArticle'" variant="success">Save</b-button>
+                </form>
+              </b-card>
+            </b-collapse>
+            <b-collapse v-for="article in filtered" v-bind:id="article.id" :accordion="showSearch ? null : 'my-accordion'"
+              class="mt-2">
+              <b-card>
+                <h1>{{ article.title }}</h1>
+                <p class="text-muted">{{ article.author.name }} | {{ article.createdAt }}</p>
+                <img :src="article.featuredImage" class="css-w-100" alt="article image">
+                <p> <span v-html="article.content"></span></p>
+                <b-button v-b-toggle="'editArticle'" variant="outline-primary" v-on:click="editArticle(article.id)">Edit
+                </b-button>
+                <b-button v-b-toggle="`viewArticle-${article.id}`" variant="danger"
+                  v-on:click="deleteArticle(article.id)">Delete</b-button>
+                <br>
+              </b-card>
+            </b-collapse>
+            <br>
+          </div>
+        </div>
       </div>
-    </footer>
+  
+      <footer>
+        <div class="css-bg-me css-center">
+          <a id="mainLogoDown" href="#"><i class="fab fa-opencart"></i> Mw</a>
+          <br>
+          <span id="copyright">&#169; 2019 MiniWordpress by Muhammad Ramadhoni</span>
+        </div>
+      </footer>
+    </div>
   </div>
-
-
+    
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
   <script src="//unpkg.com/@babel/polyfill@latest/dist/polyfill.min.js"></script>
   <!-- <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-
+  
   <script src="./script/vueWysiwyg.js"></script>
 
   <script src="./script/script.js"></script>
