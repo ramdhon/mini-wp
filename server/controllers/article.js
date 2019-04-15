@@ -19,6 +19,7 @@ class Controller {
   }
   
   static create(req, res) {
+    console.log(req.file.cloudStoragePublicUrl);
     try {
       let decoded = jwt.verify(req.headers.token);
       Article.create({

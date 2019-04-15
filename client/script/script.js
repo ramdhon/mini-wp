@@ -206,9 +206,9 @@ var app = new Vue({
       axios({
         method: 'post',
         url: serverUrl + '/articles',
-        formData,
+        data: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          // 'Content-Type': 'multipart/form-data',
           token: this.jwttoken
         }
       })
