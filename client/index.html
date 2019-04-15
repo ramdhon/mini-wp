@@ -29,7 +29,6 @@
 </head>
 
 <body>
-  <div class="g-signin2" data-onsuccess="onSignIn"></div>
   <div id="app">
     <div v-if="!isLoggedIn" class="container my-4">
       <div v-if="isRegister">
@@ -87,7 +86,7 @@
                   </div>
                   <button type="submit" class="btn css-bg-me css-fc-white">Login</button>
                   <br><br>
-                  <div class="g-signin2" data-onsuccess="onSignIn" @click="onSignIn"></div>
+                  <div class="g-signin2" data-onsuccess="onSignIn" onclick="onSignIn()"></div>
                   <small id="emailHelp" class="form-text text-muted">
                     Not registered? <a href="#" @click="moveRegister">Register here</a>
                   </small>
