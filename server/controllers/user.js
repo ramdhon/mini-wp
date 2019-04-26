@@ -74,7 +74,7 @@ class Controller {
       .then(user => {
         // console.log('USER >>> ', user);
         let token = jwt.sign({
-          id: user.id,
+          id: user._id,
           name: user.name,
           email: user.email
         }, process.env.SECRET_JWT)

@@ -31,10 +31,13 @@ const sendUploadToGCS = (req, res, next) => {
 
   stream.on('error', (err) => {
     req.file.cloudStorageError = err
+    console.log("ERRORRRRRRRRR")
+    console.log(err)
     next(err)
   })
 
   stream.on('finish', () => {
+    console.log('masuk <===')
     req.file.cloudStorageObject = gcsname
     file.makePublic().then(() => {
       req.file.cloudStoragePublicUrl = getPublicUrl(gcsname)
